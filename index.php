@@ -5,12 +5,12 @@ require __DIR__ . '/vendor/autoload.php';
 use Automattic\WooCommerce\Client;
 use Automattic\WooCommerce\HttpClient\HttpClientException;
 $woocommerce = new Client(
-    'https://tallynine.com', // Your store URL
-    'ck_bfc96e5f26d24ea8a617ce942da2790e62083e48', // Your consumer key
-    'cs_a3f52cce66b70ef398e84bfb799d587da873ddd3', // Your consumer secret
+    'http://localhost/test3', // Your store URL
+    'ck_06271f562cb3d4c4ebe3afb2abec657e7996aa43', // Your consumer key
+    'cs_a1895c2f6be456e50eb908f969c6e72a848ddf6b', // Your consumer secret
     [
         'wp_api' => true, // Enable the WP REST API integration
-        'version' => 'wc/v2' // WooCommerce WP REST API version
+        'version' => 'wc/v3' // WooCommerce WP REST API version
         
     ]
 );
@@ -26,9 +26,10 @@ try {
 	$result = count($results);
 	$customer = count($customers);
 	$product = count($products);
-	$query = ['date_min' => '2017-10-01', 'date_max' => '2017-10-30'];
+	$query = ['date_min' => '2017-10-01', 'date_max' => '2022-10-30'];
 	$sales = $woocommerce->get('reports/sales', $query);
-	$sale = $sales[0]["total_sales"];
+	//$sale = $sales[0]["total_sales"];
+	$sale = $sales[0]->total_sales;
 
 	// Last request data.
 
@@ -60,7 +61,7 @@ if (isset($_POST['btn-update'])) {
 	$woocommerce->put('orders/' . $status, array(
 		'status' => $st
 	));
-	header('Location: https://shahroznawaz.com/woo');
+	header('Location: http://localhost/woo-dashboard/index.php');
 }
 
 
@@ -68,7 +69,7 @@ if (isset($_POST['btn-delete'])) {
 	$oid = $_POST['cId'];
 
 	$woocommerce->delete('orders/' . $oid, ['force' => true]);
-	header('Location: https://shahroznawaz.com/woo');
+	header('Location: http://localhost/woo-dashboard/index.php');
 }
 
 ?>
@@ -151,14 +152,14 @@ if (isset($_POST['btn-delete'])) {
                                             <?php 
                 foreach($results as $details){
 
-                echo "<tr><td>" . $details["id"]."</td>
-                          <td>" . $details["billing"]["first_name"].$details["billing"]["last_name"]."</td>
-                          <td>" . $details["shipping"]["address_1"]."</td>
-                          <td>" . $details["billing"]["phone"]."</td>
-                          <td>" . $details["date_created"]."</td>
-                          <td>" . $details["status"]."</td>
-                          <td><a class='open-AddBookDialog btn btn-primary' data-target='#myModal' data-id=".$details['id']." data-toggle='modal'>Update</a>
-                          <a class='open-deleteDialog btn btn-danger' data-target='#myModal1' data-id=".$details['id']." data-toggle='modal'>Delete</a></td></tr>";
+                echo "<tr><td>" . $details->id."</td>
+                          <td>" . $details->billing->first_name.$details->billing->last_name."</td>
+                          <td>" . $details->shipping->address_1."</td>
+                          <td>" . $details->billing->phone."</td>
+                          <td>" . $details->date_created."</td>
+                          <td>" . $details->status."</td>
+                          <td><a class='open-AddBookDialog btn btn-primary' data-target='#myModal' data-id=".$details->id." data-toggle='modal'>Update</a>
+                          <a class='open-deleteDialog btn btn-danger' data-target='#myModal1' data-id=".$details->id." data-toggle='modal'>Delete</a></td></tr>";
                 }
                 ?>
                                         </tbody>
@@ -184,12 +185,12 @@ if (isset($_POST['btn-delete'])) {
                                                 <?php 
                     foreach($customers as $customer){
 
-                    echo "<tr><td>" . $customer["email"]."</td>
-                              <td>" . $customer["first_name"].$customer["last_name"]."</td>
-                              <td>" . $customer["billing"]["address_1"]."</td>
-                              <td>" . $customer["orders_count"]."</td>
-                              <td>" . $customer["total_spent"]."</td>
-                              <td><img height='50px' width='50px' src='".$customer["avatar_url"]."'></td></tr>";
+                    echo "<tr><td>" . $customer->email."</td>
+                              <td>" . $customer->first_name.$customer->last_name."</td>
+                              <td>" . $customer->billing->address_1."</td>
+                              <td>" . $customer->orders_count."</td>
+                              <td>" . $customer->total_spent."</td>
+                              <td><img height='50px' width='50px' src='".$customer->avatar_url."'></td></tr>";
                     }
 
                     ?>
@@ -216,12 +217,12 @@ if (isset($_POST['btn-delete'])) {
                                                 <?php 
                     foreach($products as $product){
 
-                    echo "<tr><td>" . $product["sku"]."</td>
-                              <td>" . $product["name"]."</td>
-                              <td>" . $product["status"]."</td>
-                              <td>" . $product["price"]."</td>
-                              <td>" . $product["total_sales"]."</td>
-                              <td><img height='50px' width='50px' src='".$product["images"][0]["src"]."'></td></tr>";
+                    echo "<tr><td>" . $product->sku."</td>
+                              <td>" . $product->name."</td>
+                              <td>" . $product->status."</td>
+                              <td>" . $product->price."</td>
+                              <td>" . $product->total_sales."</td>
+                              <td><img height='50px' width='50px' src='".$product->images[0]->src."'></td></tr>";
                     }
 
                     ?>
